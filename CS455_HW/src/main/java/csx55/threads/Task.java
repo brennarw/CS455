@@ -23,44 +23,39 @@ public class Task {
     private int[][] matrixOne; //only the column/row will be passed from this matrix
     private int[][] matrixTwo; //only the column/row will be passed from this matrix
     private int[][] finalMatrix;
-    private int row;
-    private int column;
-    private int result;
+    private int taskSum;
+    public int totalNumberOfTasks; 
 
-    public Task(int[][] matrixOne, int[][] matrixTwo, int[][] finalMatrix, int row, int column){
+    public Task(int[][] matrixOne, int[][] matrixTwo, int[][] finalMatrix){
         this.matrixOne = matrixOne;
         this.matrixTwo = matrixTwo;
         this.finalMatrix = finalMatrix; 
-        this.row = row;
-        this.column = column; 
+        this.totalNumberOfTasks = matrixOne.length * matrixTwo.length; 
+        this.taskSum = 0;
     }
 
-    public void setResult(int result) {
-        this.result = result;
+    public void matrixMultiplication(int cellNumber){
+        int row = cellNumber / matrixOne.length; //square matrix so can use the same length for both calculations - this one is "row"
+        int column = cellNumber % matrixOne.length; //this one is "column"
+        int taskResult = 0;
+
+        for(int i = 0; i < matrixOne.length; ++i){
+            taskResult += matrixOne[row][i] * matrixTwo[i][column];
+        }
+
+        //add this individual task result to the total task summation
+        taskSum += taskResult;
+
+        ///now set the final result in the matrix
+        setFinalMatrix(row, column, taskResult);
     }
 
-    public int getResult(){
-        return result;
+    public void setFinalMatrix(int row, int column, int taskResult){
+        finalMatrix[row][column] = taskResult;
     }
 
-    public void setFinalMatrix(){
-        finalMatrix[row][column] = result;
-    }
-
-    public int getRow(){
-        return row;
-    }
-
-    public int getColumn(){
-        return column;
-    }
-
-    public int[][] getMatrixOne(){
-        return matrixOne;
-    }
-    
-    public int[][] getMatrixTwo(){
-        return matrixTwo;
+    public int getTaskSum() {
+        return taskSum;
     }
 
     

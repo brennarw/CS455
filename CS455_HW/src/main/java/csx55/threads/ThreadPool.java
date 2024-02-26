@@ -1,6 +1,6 @@
 package csx55.threads;
 
-import java.Concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadPool implements Runnable{
 
@@ -9,13 +9,12 @@ public class ThreadPool implements Runnable{
     private int threadPoolSize;
     private Thread[] workerThreads;
     private boolean threadsStarted = false;
-    private volatile static boolean lock;
-    private volatile static boolean unlock;
+    private volatile static boolean lockStartLine = true;
+    private volatile static boolean lockFinishLine = true;
     private volatile static boolean lockMainThread = true;
     private volatile static boolean programFinished = false;
-    private static AtomicInteger counterStartLine = new AtomicInteger(0);
-    private static AtomicInteger counterFinishLine = new AtomicInteger(0);
-    private static Task task;
+    private static AtomicInteger threadCounter = new AtomicInteger(0);
+    private Task task;
     
     private ThreadPool(int threadPoolSize, int threadNumber){
         this.threadNumber = threadNumber;
@@ -39,36 +38,21 @@ public class ThreadPool implements Runnable{
         threadsStarted = true;
     }
 
-    public void unleashWorkerThreads(Task task){
+    public void unleashWorkerThreads(){
         if(!threadsStarted){
             startThreads();
         }
-        //set unlock to true - unlock the waiting threads
-        /*
-         * counter.set(0);
-         * lockMainThread = true;
-         * lock = false; //threads do stuff
-         * while(lockMainThread){//main waits}
-         * lock = true;//threads finished, now reset them
-         * counter.set(0);
-         * unlock = false; //starting reset...
-         * lockMainThread = true;
-         * while(lockMainThred){//waiting for reset}
-         * lockMainThread = true; 
-         * unlock = true; //race can begin again...
-         * 
-         */
-
-    }
-
-    public int oneCellMatrixMultiplication(Task task){
-        int result = 0; 
-        for(int i = 0; i < task.getMatrixOne().length; i++){
-            result += task.getMatrixOne()[task.getRow()][i] * task.getMatrixTwo()[i][task.getColumn()];
-        }
-        task.setResult(result);
-        task.setFinalMatrix();
-        return 0; 
+        //lockMainThread = true;
+        while(lockMainThread){} //main thread waits
+        lockStartLine = false; //threads do stuff
+        threadCounter.set(0); //reset counter for the finish line
+        lockStartLine = true; //threads have left the startline so reset it to catch them again at the start line
+        lockMainThread = true; //lock main thread to wait for all threads to get to the finish line
+        while(lockMainThread){} //waiting for all threads to reach the finish line
+        threadCounter.set(0); //reset the start line counter
+        lockFinishLine = false; //once all threads have made it to the finish line, release them to go back to the start line
+        lockMainThread = true; //lock main thread to wait for them all to get to the start line
+        lockFinishLine = true; //reset the finish line lock so that the race can begin again
     }
 
     public boolean getReadyForTask(){
@@ -78,43 +62,48 @@ public class ThreadPool implements Runnable{
     public void setReadyForTask(boolean isReady){
         readyForTask = isReady; 
     }
+
+    public void setTask(Task task){
+        this.task = task;
+    }
+
+    public Task getTask(){
+        return task;
+    }
     
     public void run(){
         System.out.println("Thread [" + threadNumber + "] started.");
-        while(true) {
-            //handle each task here
-        }
 
-        /* 
-         * while(!programFinished) {
-         *  if(counter.incrementAndGet() == threadPoolSize){ //"start line"
-         *      //only the last thread enters into this if statement - it means that all other threads have moved passed this
-         *      lockMainThread = false;
-         *  }
-         *  while(lock) {
-         *      //busy waiting
-         *  }
-         *  //handle task here
-         *  int stride = (tasl.howManyDots + (count - 1))/count; //this finds the number of tasks this thread is responsible for doing
-         *  int start = threadNumber * stride; //finds where their task number starts
-         *  int end = start + stride;
-         *  if(start >= task.howManyDotProducts){ //edge case
-         *      start = task.howManyDotProducts;
-         *  }
-         *  if(end >= task.howManyDotProducts){ //edge case
-         *      end = task.howManyDotProducts;
-         *  }
-         *  for(int i = start; i < end; ++i){
-         *      task.doDotProduct(i);
-         *  }
-         * 
-         *  if(counter.incrementAndGet() == threadPoolSize) {
-         *      //all threads have finished their tasks
-         *      lockMainThread = false;
-         *  }
-         *  while(unlock) {//busy waiting}
-         * }
-         */
-    }
+        while(!programFinished) {
+            if(threadCounter.incrementAndGet() == threadPoolSize){ //"start line"
+              //only the last thread enters into this if statement - it means that all other threads have moved passed this
+              lockMainThread = false;
+            }
+            while(lockStartLine) {
+                //busy waiting
+            }
+            //handle task here
+            System.out.println("printing from thread pool: "  + this.getTask());
+            int stride = (task.totalNumberOfTasks + (threadPoolSize - 1))/threadPoolSize; //this finds the number of tasks this thread is responsible for doing
+            int start = threadNumber * stride; //finds where their task number starts
+            int end = start + stride;
+            if(start >= task.totalNumberOfTasks){ //edge case
+                start = task.totalNumberOfTasks;
+            }
+            if(end >= task.totalNumberOfTasks){ //edge case
+                end = task.totalNumberOfTasks;
+            }
+            for(int i = start; i < end; ++i){
+                task.matrixMultiplication(i);
+            }
+            
+            if(threadCounter.incrementAndGet() == threadPoolSize) {
+                //all threads have finished their tasks
+                lockMainThread = false;
+            }
+            while(lockFinishLine) {}//busy waiting}
     
+        }
+    }
 }
+
