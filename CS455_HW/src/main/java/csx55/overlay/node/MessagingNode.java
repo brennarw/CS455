@@ -182,30 +182,32 @@ public class MessagingNode extends Node{
           //routing.printMap();
           //loop through numRounds times and send messages each time
           for(int i = 0; i < numRounds; i++){
-               //find a random messaging node to send a message to - excluding itself
-               int randomMessagingNodeIndex = randy.nextInt(overlayHostNames.size());
-               String startNode = hostName + ":" + portNumber;
-               int message = randy.nextInt(); //generates a number between [-2147483648, 2147483647]
-               if(randomMessagingNodeIndex != overlayOwnHostIndex){ //index is valid
-                    String endNode = overlayHostNames.get(randomMessagingNodeIndex);
-                    String path = routing.findShortestPath(startNode, endNode);
-
-                    //increment counters:
-                    messagesSent++;
-                    messagesSentSummation += message;
-
-                    sendOverRoute(path, message);
-               }
-               else{
-                    randomMessagingNodeIndex = (randomMessagingNodeIndex + 1) % overlayHostNames.size(); //add one if the index matches the index of this messaging node
-                    String endNode = overlayHostNames.get(randomMessagingNodeIndex);
-                    String path = routing.findShortestPath(startNode, endNode);
-
-                    //increment counters
-                    messagesSent++;
-                    messagesSentSummation += message;
-
-                    sendOverRoute(path, message);
+               for(int j = 0; j < 5; j++){
+                    //find a random messaging node to send a message to - excluding itself
+                    int randomMessagingNodeIndex = randy.nextInt(overlayHostNames.size());
+                    String startNode = hostName + ":" + portNumber;
+                    int message = randy.nextInt(); //generates a number between [-2147483648, 2147483647]
+                    if(randomMessagingNodeIndex != overlayOwnHostIndex){ //index is valid
+                         String endNode = overlayHostNames.get(randomMessagingNodeIndex);
+                         String path = routing.findShortestPath(startNode, endNode);
+     
+                         //increment counters:
+                         messagesSent++;
+                         messagesSentSummation += message;
+     
+                         sendOverRoute(path, message);
+                    }
+                    else{
+                         randomMessagingNodeIndex = (randomMessagingNodeIndex + 1) % overlayHostNames.size(); //add one if the index matches the index of this messaging node
+                         String endNode = overlayHostNames.get(randomMessagingNodeIndex);
+                         String path = routing.findShortestPath(startNode, endNode);
+     
+                         //increment counters
+                         messagesSent++;
+                         messagesSentSummation += message;
+     
+                         sendOverRoute(path, message);
+                    }
                }
           }
 
