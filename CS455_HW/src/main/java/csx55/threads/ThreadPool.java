@@ -46,12 +46,13 @@ public class ThreadPool implements Runnable{
         while(lockMainThread){} //main thread waits
         lockStartLine = false; //threads do stuff
         threadCounter.set(0); //reset counter for the finish line
-        lockStartLine = true; //threads have left the startline so reset it to catch them again at the start line
         lockMainThread = true; //lock main thread to wait for all threads to get to the finish line
         while(lockMainThread){} //waiting for all threads to reach the finish line
+        lockStartLine = true; //threads have left the startline so reset it to catch them again at the start line
         threadCounter.set(0); //reset the start line counter
         lockFinishLine = false; //once all threads have made it to the finish line, release them to go back to the start line
         lockMainThread = true; //lock main thread to wait for them all to get to the start line
+        while(lockMainThread){}
         lockFinishLine = true; //reset the finish line lock so that the race can begin again
     }
 
@@ -72,7 +73,7 @@ public class ThreadPool implements Runnable{
     }
     
     public void run(){
-        System.out.println("Thread [" + threadNumber + "] started.");
+        //System.out.println("Thread [" + threadNumber + "] started.");
 
         while(!programFinished) {
             if(threadCounter.incrementAndGet() == threadPoolSize){ //"start line"
@@ -80,11 +81,12 @@ public class ThreadPool implements Runnable{
               lockMainThread = false;
             }
             while(lockStartLine) {
-                System.out.println(threadNumber + "busy waiting at start line");
+                //System.out.println(threadNumber + "busy waiting at start line");
+                //System.out.println(lockMainThread);
                 //busy waiting
             }
             //handle task here
-            System.out.println("printing from thread pool: "  + this.getTask());
+            //System.out.println("printing from thread pool: "  + this.getTask());
             int stride = (task.totalNumberOfTasks + (threadPoolSize - 1))/threadPoolSize; //this finds the number of tasks this thread is responsible for doing
             int start = threadNumber * stride; //finds where their task number starts
             int end = start + stride;
@@ -102,7 +104,9 @@ public class ThreadPool implements Runnable{
                 //all threads have finished their tasks
                 lockMainThread = false;
             }
-            while(lockFinishLine) {System.out.println("busy waiting at finish line");}//busy waiting}
+            while(lockFinishLine) {
+                //System.out.println("busy waiting at finish line");}//busy waiting
+            }
     
         }
     }
