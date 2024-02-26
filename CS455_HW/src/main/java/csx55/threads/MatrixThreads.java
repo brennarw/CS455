@@ -142,7 +142,7 @@ public class MatrixThreads{
 
         //assign this task to the thread pool
         matrix.threadPool.setTask(taskOne);
-        System.out.println("printing from matrix threads: " + matrix.threadPool.getTask());
+        //System.out.println("printing from matrix threads: " + matrix.threadPool.getTask());
 
         //time the first task
         long startTime = System.currentTimeMillis();
@@ -150,9 +150,24 @@ public class MatrixThreads{
         long endTime = System.currentTimeMillis();
 
         //print out the matrix X and the time it took to populate it
-        matrix.printMatrix(matrix.matrixX);
+        //matrix.printMatrix(matrix.matrixX);
         System.out.println("Calculation of matrix X (product of A and B) complete - sum of the elements in X is: " + taskOne.getTaskSum());
         System.out.println("Time to Compute matrix X: " + (endTime - startTime) + "s");
+
+        //make the second task - multiply matrix C and D to get Y
+        Task taskTwo = new Task(matrix.matrixC, matrix.matrixD, matrix.matrixY);
+
+        //assign this task to the thread pool
+        matrix.threadPool.setTask(taskTwo);
+
+        //time the second task
+        startTime = System.currentTimeMillis();
+        matrix.threadPool.unleashWorkerThreads();
+        endTime = System.currentTimeMillis();
+
+        //print out the time and sum for this task
+        System.out.println("Calculation of matrix Y (product of C and D) complete - sum of the elements in X is: " + taskTwo.getTaskSum());
+        System.out.println("Time to Compute matrix Y: " + (endTime - startTime) + "s");
 
 
 

@@ -14,7 +14,7 @@ public class ThreadPool implements Runnable{
     private volatile static boolean lockMainThread = true;
     private volatile static boolean programFinished = false;
     private static AtomicInteger threadCounter = new AtomicInteger(0);
-    private Task task;
+    private static Task task;
     
     private ThreadPool(int threadPoolSize, int threadNumber){
         this.threadNumber = threadNumber;
@@ -64,7 +64,7 @@ public class ThreadPool implements Runnable{
     }
 
     public void setTask(Task task){
-        this.task = task;
+        ThreadPool.task = task;
     }
 
     public Task getTask(){
@@ -80,6 +80,7 @@ public class ThreadPool implements Runnable{
               lockMainThread = false;
             }
             while(lockStartLine) {
+                System.out.println(threadNumber + "busy waiting at start line");
                 //busy waiting
             }
             //handle task here
@@ -101,7 +102,7 @@ public class ThreadPool implements Runnable{
                 //all threads have finished their tasks
                 lockMainThread = false;
             }
-            while(lockFinishLine) {}//busy waiting}
+            while(lockFinishLine) {System.out.println("busy waiting at finish line");}//busy waiting}
     
         }
     }
