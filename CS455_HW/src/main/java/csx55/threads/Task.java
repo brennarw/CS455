@@ -2,24 +2,6 @@ package csx55.threads;
 
 public class Task {
 
-    /*
-     * Matrix A, B, C;
-     * int howManyDotProducts;
-     * 
-     * public Task(Matrix a, Matrix b){
-     *     A = a;
-     *     B = b;
-     *     C = new Matrix(row);
-     *     howManyDotProducts = a.row * a.row;
-     * }
-     * 
-     * public void doDotProduct(int i){
-     *      int row = i / A.row;
-     *      int column = i % A.row;
-     *      //do dot product
-     * }
-     */
-
     private int[][] matrixOne; //only the column/row will be passed from this matrix
     private int[][] matrixTwo; //only the column/row will be passed from this matrix
     private int[][] finalMatrix;
