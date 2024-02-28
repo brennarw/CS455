@@ -10,10 +10,8 @@ public class MatrixThreads{
 
     private int threadPoolSize;
     private int matrixDimension;
-    private int seed;
     private Random randy; 
     private Queue<Task> taskQueue; 
-    private ArrayList<Thread> threads; 
     private ThreadPool threadPool;
     private long timeToComputeX;
     private long timeToComputeY;
@@ -37,12 +35,9 @@ public class MatrixThreads{
     public MatrixThreads(int threadPoolSize, int matrixDimension, int seed) {
         this.threadPoolSize = threadPoolSize;
         this.matrixDimension = matrixDimension;
-        this.seed = seed;
         this.taskQueue = new LinkedList<>();
-        this.threads = new ArrayList<>();
+        this.randy = new Random(seed);
 
-
-        randy = new Random(seed);
         matrixA = new int[matrixDimension][matrixDimension];
         matrixB = new int[matrixDimension][matrixDimension];
         matrixC = new int[matrixDimension][matrixDimension];
@@ -57,15 +52,6 @@ public class MatrixThreads{
         matrixBSum = populateMatrix(matrixB);
         matrixCSum = populateMatrix(matrixC);
         matrixDSum = populateMatrix(matrixD);
-
-        // System.out.println("Matrix A:");
-        // printMatrix(matrixA);
-        // System.out.println("Matrix B:");
-        // printMatrix(matrixB);
-        // System.out.println("Matrix C:");
-        // printMatrix(matrixC);
-        // System.out.println("Matrix D:");
-        // printMatrix(matrixD);
     }
 
     public void createThreadPool(int threadPoolSize){
@@ -88,6 +74,16 @@ public class MatrixThreads{
         return sum;
     }
 
+    public long sumMatrix(int[][] matrix){
+        long sum = 0;
+        for(int i = 0; i < matrix.length; i++){
+            for(int j = 0; j < matrix[i].length; j++){
+                sum += matrix[i][j];
+            }
+        }
+        return sum;
+    }
+
     public void printMatrix(int[][] matrix) {
         for(int row = 0; row < matrix.length; row++){
             for(int column = 0; column < matrix[row].length; column++){
@@ -100,15 +96,6 @@ public class MatrixThreads{
     public int findAvailableThread(){ //this needs to be synchronized or something - may cause concurrency issues
         return -1; //this means no thread is available for a task
     }
-
-    // public void createTasks(int[][] matrixOne, int[][] matrixTwo, int[][] finalMatrix){
-    //     for(int column = 0; column < matrixOne.length; column++){
-    //         for(int row = 0; row < matrixTwo.length; row++){
-    //             Task task = new Task(matrixOne, matrixTwo, finalMatrix, row, column);
-    //             taskQueue.add(task);
-    //         }
-    //     }
-    // }
 
     public void assignTasks(){
         while(taskQueue.peek() != null){
@@ -152,8 +139,9 @@ public class MatrixThreads{
         long endTime = System.currentTimeMillis();
         matrix.timeToComputeX = (endTime - startTime)/1000;
         //print out the matrix X and the time it took to populate it
-        System.out.println("Calculation of matrix X (product of A and B) complete - sum of the elements in X is: " + taskOne.getTaskSum());
-        System.out.println("Time to Compute matrix X: " + matrix.timeToComputeX + "s");
+        long matrixXSum = matrix.sumMatrix(matrix.matrixX);
+        System.out.println("Calculation of matrix X (product of A and B) complete - sum of the elements in X is: " + matrixXSum);
+        System.out.println("Time to Compute matrix X: " + matrix.timeToComputeX + " s");
         System.out.println();
 
 
@@ -167,8 +155,9 @@ public class MatrixThreads{
         endTime = System.currentTimeMillis();
         matrix.timeToComputeY = (endTime - startTime)/1000;
         //print out the time and sum for this task
-        System.out.println("Calculation of matrix Y (product of C and D) complete - sum of the elements in Y is: " + taskTwo.getTaskSum());
-        System.out.println("Time to Compute matrix Y: " + matrix.timeToComputeY + "s");
+        long matrixYSum = matrix.sumMatrix(matrix.matrixY);
+        System.out.println("Calculation of matrix Y (product of C and D) complete - sum of the elements in Y is: " + matrixYSum);
+        System.out.println("Time to Compute matrix Y: " + matrix.timeToComputeY + " s");
         System.out.println();
 
 
@@ -182,34 +171,18 @@ public class MatrixThreads{
         endTime = System.currentTimeMillis();
         matrix.timeToComputeZ = (endTime - startTime)/1000;
         //print out the time and sum for this task
-        System.out.println("Calculation of matrix Z (product of X and Y) complete - sum of the elements in Z is: " + taskThree.getTaskSum());
-        System.out.println("Time to Compute matrix Z: " + matrix.timeToComputeZ + "s");
+        long matrixZSum = matrix.sumMatrix(matrix.matrixZ);
+        System.out.println("Calculation of matrix Z (product of X and Y) complete - sum of the elements in Z is: " + matrixZSum);
+        System.out.println("Time to Compute matrix Z: " + matrix.timeToComputeZ + " s");
         System.out.println();
 
+        long totalProgramTime = matrix.timeToComputeX + matrix.timeToComputeY + matrix.timeToComputeZ;
+        System.out.println("Cumulative time to compute matrixes X, Y, and Z using a thread pool of size = " + matrix.threadPoolSize + " is : " + totalProgramTime + " s");
 
+        //kill threads
+        matrix.threadPool.setProgramFinished(true);
 
-
-
-
-
-
-        //build task queue for matrix multiplication between A and B to populate X:
-        //matrix.createTasks(matrix.matrixA, matrix.matrixB, matrix.matrixX);
-
-        //assign those tasks to the thread pool:
-
-        /*
-         * Pool = new ThreadPool(numberOfWorkerThreads);
-         * random = new Random(seed);
-         * Task task = new Task(A,B);
-         * pool.setTask(task);
-         * //start time
-         * pool.unleashThreads();
-         * //end time
-         */
-
-
-
+        System.exit(0);
 
     }
 }

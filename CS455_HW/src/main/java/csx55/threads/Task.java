@@ -23,7 +23,6 @@ public class Task {
     private int[][] matrixOne; //only the column/row will be passed from this matrix
     private int[][] matrixTwo; //only the column/row will be passed from this matrix
     private int[][] finalMatrix;
-    private int taskSum;
     public int totalNumberOfTasks; 
 
     public Task(int[][] matrixOne, int[][] matrixTwo, int[][] finalMatrix){
@@ -31,7 +30,6 @@ public class Task {
         this.matrixTwo = matrixTwo;
         this.finalMatrix = finalMatrix; 
         this.totalNumberOfTasks = matrixOne.length * matrixTwo.length; 
-        this.taskSum = 0;
     }
 
     public void matrixMultiplication(int cellNumber){
@@ -43,19 +41,12 @@ public class Task {
             taskResult += matrixOne[row][i] * matrixTwo[i][column];
         }
 
-        //add this individual task result to the total task summation
-        taskSum += taskResult;
-
         ///now set the final result in the matrix
         setFinalMatrix(row, column, taskResult);
     }
 
     public void setFinalMatrix(int row, int column, int taskResult){
         finalMatrix[row][column] = taskResult;
-    }
-
-    public int getTaskSum() {
-        return taskSum;
     }
 
     

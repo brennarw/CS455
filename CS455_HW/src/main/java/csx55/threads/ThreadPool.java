@@ -71,6 +71,10 @@ public class ThreadPool implements Runnable{
     public Task getTask(){
         return task;
     }
+
+    public void setProgramFinished(boolean finished){
+        this.programFinished = finished;
+    }
     
     public void run(){
         //System.out.println("Thread [" + threadNumber + "] started.");
