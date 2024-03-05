@@ -12,9 +12,9 @@ public class MatrixThreads{
     private Random randy; 
     private Queue<Task> taskQueue; 
     private ThreadPool threadPool;
-    private long timeToComputeX;
-    private long timeToComputeY;
-    private long timeToComputeZ;
+    private double timeToComputeX;
+    private double timeToComputeY;
+    private double timeToComputeZ;
 
     private int[][] matrixA;
     private int[][] matrixB;
@@ -133,9 +133,9 @@ public class MatrixThreads{
         //assign this task to the thread pool
         matrix.threadPool.setTask(taskOne);
         //time the first task
-        long startTime = System.currentTimeMillis();
+        double startTime = System.currentTimeMillis();
         matrix.threadPool.unleashWorkerThreads();
-        long endTime = System.currentTimeMillis();
+        double endTime = System.currentTimeMillis();
         matrix.timeToComputeX = (endTime - startTime)/1000;
         //print out the matrix X and the time it took to populate it
         long matrixXSum = matrix.sumMatrix(matrix.matrixX);
@@ -175,7 +175,7 @@ public class MatrixThreads{
         System.out.println("Time to Compute matrix Z: " + matrix.timeToComputeZ + " s");
         System.out.println();
 
-        long totalProgramTime = matrix.timeToComputeX + matrix.timeToComputeY + matrix.timeToComputeZ;
+        double totalProgramTime = matrix.timeToComputeX + matrix.timeToComputeY + matrix.timeToComputeZ;
         System.out.println("Cumulative time to compute matrixes X, Y, and Z using a thread pool of size = " + matrix.threadPoolSize + " is : " + totalProgramTime + " s");
 
         //kill threads
