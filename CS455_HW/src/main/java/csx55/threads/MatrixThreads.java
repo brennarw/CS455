@@ -10,7 +10,7 @@ public class MatrixThreads{
     private int threadPoolSize;
     private int matrixDimension;
     private Random randy; 
-    private Queue<Task> taskQueue; 
+    //private Queue<Task> taskQueue; 
     private ThreadPool threadPool;
     private double timeToComputeX;
     private double timeToComputeY;
@@ -34,7 +34,7 @@ public class MatrixThreads{
     public MatrixThreads(int threadPoolSize, int matrixDimension, int seed) {
         this.threadPoolSize = threadPoolSize;
         this.matrixDimension = matrixDimension;
-        this.taskQueue = new LinkedList<>();
+        //this.taskQueue = new LinkedList<>();
         this.randy = new Random(seed);
 
         matrixA = new int[matrixDimension][matrixDimension];
