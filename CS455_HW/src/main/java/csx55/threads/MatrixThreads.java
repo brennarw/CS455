@@ -62,7 +62,7 @@ public class MatrixThreads{
         //matrix size = matrixDimension x matrixDimension
         int sum = 0; 
 
-        //populating matrix A
+        //populating matrix 
         for(int row = 0; row < matrixDimension; row++) {
             for(int column = 0; column < matrixDimension; column++){
                 int randomElement = 1000 - randy.nextInt(2000);
@@ -92,15 +92,15 @@ public class MatrixThreads{
         }
     }
 
-    public int findAvailableThread(){ //this needs to be synchronized or something - may cause concurrency issues
-        return -1; //this means no thread is available for a task
-    }
+    // public int findAvailableThread(){ //this needs to be synchronized or something - may cause concurrency issues
+    //     return -1; //this means no thread is available for a task
+    // }
 
-    public void assignTasks(){
-        while(taskQueue.peek() != null){
+    // public void assignTasks(){
+    //     while(taskQueue.peek() != null){
 
-        }
-    }
+    //     }
+    // }
 
     public static void main(String[] args) {
         //should take in [threadPoolSize, matrixDimension, seed] in that order
@@ -176,7 +176,7 @@ public class MatrixThreads{
         System.out.println();
 
         double totalProgramTime = matrix.timeToComputeX + matrix.timeToComputeY + matrix.timeToComputeZ;
-        System.out.println("Cumulative time to compute matrixes X, Y, and Z using a thread pool of size = " + matrix.threadPoolSize + " is : " + totalProgramTime + " s");
+        System.out.printf("Cumulative time to compute matrixes X, Y, and Z using a thread pool of size = %d is %.3f s %n", matrix.threadPoolSize, totalProgramTime);
 
         //kill threads
         matrix.threadPool.setProgramFinished(true);
