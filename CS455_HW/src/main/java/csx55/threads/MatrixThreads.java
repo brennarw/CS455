@@ -1,7 +1,5 @@
 package csx55.threads;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 
 
