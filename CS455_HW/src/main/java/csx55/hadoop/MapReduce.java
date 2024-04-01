@@ -26,15 +26,16 @@ public class MapReduce {
         return job;
     }
 
-    public void setJob(Configuration conf, String job){
+    public void setJob(String jobName){
         try{
-            this.job = Job.getInstance(conf, job);
+            this.job = Job.getInstance(getConfiguration(), jobName);
         } catch(IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void TaskOne(Job job, String input, String output){
+    public void taskOne(String input, String output){
+        job.setJob("QuestionOneJob");
         job.setJarByClass(MapReduce.class);
         job.setMapperClass(TaskOneMapper.class);
         job.setCombinerClass(TaskOneReducer.class); //combiner is in the reducer
@@ -58,6 +59,16 @@ public class MapReduce {
 
         String input = args[0]; //this is the path to where to find the dataset
         String output = args[1]; //this is the path to where to store the output
+
+        MapReduce mapReduce = new MapReduce();
+
+        try{
+            mapReduce.taskOne("/hw3Files/metadata.txt", "/hw3QuestionOneOutput");
+            //mapReduce.taskTwo(input, output);
+            //....
+        } catch(Exception e){
+            System.out.println(e.getMessage);
+        }
 
 
     }
