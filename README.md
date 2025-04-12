@@ -9,6 +9,6 @@ Threading Assignment:
 
 In this assignment you will be designing a thread pool that manages a set of matrix multiplications. The matrix multiplications will be expressed as a set of tasks that are managed by a thread pool; a given task is performed by a single thread within the pool.
 Given a set of 4 input matrices, you will be computing two intermediate matrices en route to computing the final product matrix. Here is a compact representation for the goals of this assignment.
-• There are 4 input matrices: A, B, C, and D
-• You will be computing 2 intermediate matrices: X and Y. where X=AB and Y=CD
-• The final product matrix Z is the product of the two intermediate matrices. Z=XY
+* There are 4 input matrices: A, B, C, and D
+* You will be computing 2 intermediate matrices: X and Y. where X=AB and Y=CD
+* The final product matrix Z is the product of the two intermediate matrices. Z=XY
